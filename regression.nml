@@ -1,0 +1,45 @@
+;;;;;;;;;LITERAL;;;;;;;;
+(val x 3)
+(val y 'hi)
+(val z #t)
+
+(check-principal-type x int)
+(check-principal-type y sym)
+(check-principal-type z bool)
+(check-principal-type z bool)
+
+
+;;;;;;;;;;IFX;;;;;;;;;;;;
+(check-principal-type (if #t #t #f) bool)
+(check-principal-type (if #t 'a 'b) sym)
+(check-principal-type (if #t 1 1) int)
+(check-type-error (if 2 #t #f))
+(check-type-error (if #t 2 #f))
+
+
+;;;;;;;;;;BEGIN;;;;;;;;;;;
+(check-principal-type (begin 'int x) int)
+(check-principal-type (begin x 'int) sym)
+(check-principal-type (begin (+ x 5) (> x 2)) bool)
+(check-principal-type (begin) unit)
+
+
+;;;;;;;;;LAMBDA;;;;;;;;;;;
+(val q 7)
+(check-principal-type (lambda (x q) (+ x q)) (int int -> int))
+(check-principal-type (lambda (x q) (< x q)) (int int -> bool))
+(check-type-error (lambda (x) (cons x x)))
+
+
+;;;;;;;;;LET;;;;;;;;;;;
+(check-principal-type (let ((p 1) (q 4)) (+ p q)) int)
+(check-principal-type (let ((p 1) (q 4)) 3) int)
+(check-type-error (let ((p 1) (q 'hi)) (+ p q)))
+
+
+
+;;;;;;;;;LETREC;;;;;;;;;;;
+(check-principal-type (letrec ([mult (lambda (x y) (* x y))]) (mult 2 3)) int)
+(check-principal-type (letrec ([add (lambda (x y) (+ x y))]) (add 2 3)) int)
+(check-type-error (letrec ([mult (lambda (x y) (* x y))]) (mult 2 'a)))
+(check-type-error (letrec ([add (lambda (x y) (+ x y))]) (add 2)))
